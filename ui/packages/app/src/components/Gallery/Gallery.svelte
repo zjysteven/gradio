@@ -29,7 +29,7 @@
 						: [normalise_file(img, root), null]
 			  );
 
-	let prevValue: Array<string | [string, string]> | null = null;
+	let prevValue: string[] | FileData[] | null = null;
 	let selected_image: number | null = null;
 	$: if (prevValue !== value) {
 		selected_image = null;
