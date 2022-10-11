@@ -1555,7 +1555,7 @@ class Video(Changeable, Clearable, Playable, IOComponent, FileSerializable):
         interactive: Optional[bool] = None,
         visible: bool = True,
         elem_id: Optional[str] = None,
-        mirror_webcam: bool = True,
+        mirror_webcam: bool = None,
         **kwargs,
     ):
         """
@@ -1573,7 +1573,15 @@ class Video(Changeable, Clearable, Playable, IOComponent, FileSerializable):
         self.temp_dir = tempfile.mkdtemp()
         self.format = format
         self.source = source
-        self.mirror_webcam = mirror_webcam
+
+        self.mirror_webcam = (
+            mirror_webcam
+            if mirror_webcam is not None
+            else True
+            if source == "webcam"
+            else False
+        )
+
         IOComponent.__init__(
             self,
             label=label,
@@ -1643,7 +1651,7 @@ class Video(Changeable, Clearable, Playable, IOComponent, FileSerializable):
             ff = FFmpeg(inputs={file_name: None}, outputs={output_file_name: None})
             ff.run()
             return output_file_name
-        elif self.source == "webcam" and self.mirror_webcam is True:
+        elif self.mirror_webcam is True:
             path = Path(file_name)
             output_file_name = str(path.with_stem(f"{path.stem}_flip"))
             ff = FFmpeg(
