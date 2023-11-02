@@ -72,10 +72,7 @@
 		gtag("config", "UA-156449732-1");
 	</script>
 
-	<script
-		type="module"
-		src="https://gradio.s3-us-west-2.amazonaws.com/{version}/gradio.js"
-	></script>
+	<script type="module" src="http://localhost:4321/gradio.js"></script>
 </svelte:head>
 
 <Header />
