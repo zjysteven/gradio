@@ -1,5 +1,17 @@
 # gradio
 
+## 4.25.0
+
+### Features
+
+- [#7855](https://github.com/gradio-app/gradio/pull/7855) [`a0741fb`](https://github.com/gradio-app/gradio/commit/a0741fb66dd9a1a3627ae478ae8c34ad219ed903) - Lite wheel optimization.  Thanks @whitphx!
+- [#7869](https://github.com/gradio-app/gradio/pull/7869) [`b9dbcf7`](https://github.com/gradio-app/gradio/commit/b9dbcf7aa22fe9a19edbc0c52d46a973d8d57ad4) - Make buttons in `gr.ChatInterface` more mobile-friendly.  Thanks @abidlabs!
+- [#7875](https://github.com/gradio-app/gradio/pull/7875) [`e6d051d`](https://github.com/gradio-app/gradio/commit/e6d051dc8a497fdd6b4cfbd57efd4c8015b97a66) - Fix how files are processed in `gr.ChatInterface`.  Thanks @abidlabs!
+
+### Fixes
+
+- [#7865](https://github.com/gradio-app/gradio/pull/7865) [`7bbc3b6`](https://github.com/gradio-app/gradio/commit/7bbc3b62bf85af2d2230e5f7539efb7f1f0007a1) - JS functions break entire app if there's no input, fixed.  Thanks @aliabid94!
+
 ## 4.24.0
 
 ### Features
