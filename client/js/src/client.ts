@@ -10,7 +10,8 @@ import type {
 	Status,
 	SubmitReturn,
 	UploadResponse,
-	client_return
+	client_return,
+	StreamResponse
 } from "./types";
 import { view_api } from "./utils/view_api";
 import { upload_files } from "./utils/upload_files";
@@ -28,7 +29,12 @@ import {
 } from "./helpers/init_helpers";
 import { check_space_status } from "./helpers/spaces";
 import { open_stream } from "./utils/stream";
-import { API_INFO_ERROR_MSG, CONFIG_ERROR_MSG } from "./constants";
+import {
+	API_INFO_ERROR_MSG,
+	CONFIG_ERROR_MSG,
+	STREAM_ERROR_MSG
+} from "./constants";
+import { events } from "fetch-event-stream";
 
 export class NodeBlob extends Blob {
 	constructor(blobParts?: BlobPart[], options?: BlobPropertyBag) {
@@ -53,25 +59,29 @@ export class Client {
 	pending_diff_streams: Record<string, any[][]> = {};
 	event_callbacks: Record<string, (data?: unknown) => Promise<void>> = {};
 	unclosed_events: Set<string> = new Set();
-	heartbeat_event: EventSource | null = null;
+	close_heartbeat: AbortController | null = null;
 
 	fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
 		return fetch(input, init);
 	}
 
-	stream_factory(url: URL): EventSource | null {
-		if (typeof window === "undefined" || typeof EventSource === "undefined") {
-			import("eventsource")
-				.then((EventSourceModule) => {
-					return new EventSourceModule.default(url.toString());
-				})
-				.catch((error) =>
-					console.error("Failed to load EventSource module:", error)
-				);
-		} else {
-			return new EventSource(url.toString());
+	async stream(
+		input: string | URL,
+		signal?: AbortSignal,
+		init?: RequestInit
+	): Promise<StreamResponse> {
+		const _input = new URL(input);
+
+		try {
+			const r = await this.fetch(_input, init);
+			if (r.status === 200) {
+				return events(r, signal);
+			}
+			throw new Error(STREAM_ERROR_MSG + _input.href);
+		} catch (e) {
+			console.error(e);
+			throw new Error(STREAM_ERROR_MSG + _input.href);
 		}
-		return null;
 	}
 
 	view_api: () => Promise<ApiInfo<JsApiData>>;
@@ -144,7 +154,9 @@ export class Client {
 						const heartbeat_url = new URL(
 							`${this.config.root}/heartbeat/${this.session_hash}`
 						);
-						this.heartbeat_event = this.stream_factory(heartbeat_url); // Just connect to the endpoint without parsing the response. Ref: https://github.com/gradio-app/gradio/pull/7974#discussion_r1557717540
+
+						this.close_heartbeat = new AbortController(); // Just connect to the endpoint without parsing the response. Ref: https://github.com/gradio-app/gradio/pull/7974#discussion_r1557717540
+						this.stream(heartbeat_url, this.close_heartbeat.signal);
 
 						if (this.config.space_id && this.options.hf_token) {
 							this.jwt = await get_jwt(
@@ -173,7 +185,7 @@ export class Client {
 	}
 
 	close(): void {
-		this.heartbeat_event?.close();
+		this.close_heartbeat?.abort();
 	}
 
 	static async duplicate(

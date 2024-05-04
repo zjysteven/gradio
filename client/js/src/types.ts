@@ -1,5 +1,5 @@
 // API Data Types
-
+import type { ServerSentEventMessage } from "fetch-event-stream";
 import { hardware_types } from "./helpers/spaces";
 
 export interface ApiData {
@@ -73,9 +73,12 @@ export type client_return = {
 	view_api: (_fetch: typeof fetch) => Promise<ApiInfo<JsApiData>>;
 };
 
+export type StreamResponse = Promise<
+	AsyncGenerator<ServerSentEventMessage, void, unknown>
+>;
+
 export type SubmitReturn = {
-	on: event;
-	off: event;
+	stream: StreamResponse;
 	cancel: () => Promise<void>;
 	destroy: () => void;
 };
