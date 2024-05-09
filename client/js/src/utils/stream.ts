@@ -1,15 +1,10 @@
-import { BROKEN_CONNECTION_MSG } from "../constants";
+import { BROKEN_CONNECTION_MSG, STREAM_ERROR_MSG } from "../constants";
 import type { Client } from "../client";
+import type { StreamResponse, ServerSentEventMessage } from "../types";
 
-export function open_stream(this: Client): void {
-	let {
-		event_callbacks,
-		unclosed_events,
-		pending_stream_messages,
-		stream_status,
-		config,
-		jwt
-	} = this;
+export async function* open_stream(this: Client): ReturnType<StreamResponse> {
+	let { unclosed_events, pending_stream_messages, stream_status, config, jwt } =
+		this;
 
 	if (!config) {
 		throw new Error("Could not resolve app config");
@@ -17,7 +12,7 @@ export function open_stream(this: Client): void {
 
 	stream_status.open = true;
 
-	let stream: EventSource | null = null;
+	let stream: Awaited<StreamResponse> | null = null;
 	let params = new URLSearchParams({
 		session_hash: this.session_hash
 	}).toString();
@@ -28,70 +23,65 @@ export function open_stream(this: Client): void {
 		url.searchParams.set("__sign", jwt);
 	}
 
-	stream = this.stream_factory(url);
+	const controller = new AbortController();
+	try {
+		stream = await this.stream(url, controller.signal);
+	} catch (e) {
+		console.error(STREAM_ERROR_MSG + url.href);
+	}
 
-	if (!stream) {
-		console.warn("Cannot connect to SSE endpoint: " + url.toString());
+	if (stream == null) {
+		close_stream(stream_status, controller);
+
+		yield {
+			code: "unexpected_error",
+			message: BROKEN_CONNECTION_MSG
+		};
 		return;
 	}
 
-	stream.onmessage = async function (event: MessageEvent) {
-		let _data = JSON.parse(event.data);
+	for await (const message of stream) {
+		console.log("stream message", message);
+		// message?.
+		if (!message.data) throw new Error("Stream message is undefined");
+
+		let _data = JSON.parse(message?.data);
 		if (_data.msg === "close_stream") {
-			close_stream(stream_status, stream);
+			close_stream(stream_status, controller);
 			return;
 		}
 		const event_id = _data.event_id;
 		if (!event_id) {
-			await Promise.all(
-				Object.keys(event_callbacks).map((event_id) =>
-					event_callbacks[event_id](_data)
-				)
-			);
-		} else if (event_callbacks[event_id] && config) {
+			yield _data;
+		} else if (config) {
 			if (
 				_data.msg === "process_completed" &&
 				["sse", "sse_v1", "sse_v2", "sse_v2.1"].includes(config.protocol)
 			) {
 				unclosed_events.delete(event_id);
 				if (unclosed_events.size === 0) {
-					close_stream(stream_status, stream);
+					close_stream(stream_status, controller);
 				}
 			}
-			let fn: (data: any) => void = event_callbacks[event_id];
 
-			if (typeof window !== "undefined") {
-				window.setTimeout(fn, 0, _data); // need to do this to put the event on the end of the event loop, so the browser can refresh between callbacks and not freeze in case of quick generations. See https://github.com/gradio-app/gradio/pull/7055
-			} else {
-				setImmediate(fn, _data);
-			}
+			yield _data;
 		} else {
-			if (!pending_stream_messages[event_id]) {
-				pending_stream_messages[event_id] = [];
-			}
-			pending_stream_messages[event_id].push(_data);
+			// if (!pending_stream_messages[event_id]) {
+			// 	pending_stream_messages[event_id] = [];
+			// }
+			// pending_stream_messages[event_id].push(_data);
+			yield _data;
 		}
-	};
-	stream.onerror = async function () {
-		await Promise.all(
-			Object.keys(event_callbacks).map((event_id) =>
-				event_callbacks[event_id]({
-					msg: "unexpected_error",
-					message: BROKEN_CONNECTION_MSG
-				})
-			)
-		);
-		close_stream(stream_status, stream);
-	};
+	}
 }
 
 export function close_stream(
 	stream_status: { open: boolean },
-	stream: EventSource | null
+	stream: AbortController
 ): void {
 	if (stream_status && stream) {
 		stream_status.open = false;
-		stream?.close();
+		stream?.abort();
 	}
 }
 

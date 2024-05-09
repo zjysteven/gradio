@@ -180,6 +180,7 @@ export class Client {
 		options: ClientOptions = {}
 	): Promise<Client> {
 		const client = new this(app_reference, options); // this refers to the class itself, not the instance
+		console.log("client", client);
 		await client.init();
 		return client;
 	}

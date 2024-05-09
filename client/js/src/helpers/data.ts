@@ -109,7 +109,7 @@ export async function walk_and_store_blobs(
 	return [];
 }
 
-export function skip_queue(id: number, config: Config): boolean {
+export function is_skip_queue(id: number, config: Config): boolean {
 	if (config?.dependencies?.[id]?.queue !== null) {
 		return !config.dependencies[id].queue;
 	}

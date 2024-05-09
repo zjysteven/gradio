@@ -73,8 +73,11 @@ export type client_return = {
 	view_api: (_fetch: typeof fetch) => Promise<ApiInfo<JsApiData>>;
 };
 
-export type StreamResponse = Promise<
-	AsyncGenerator<ServerSentEventMessage, void, unknown>
+export type { ServerSentEventMessage };
+export type StreamResponse = AsyncGenerator<
+	ServerSentEventMessage,
+	void,
+	unknown
 >;
 
 export type SubmitReturn = {
@@ -242,6 +245,11 @@ export interface LogMessage {
 	log: string;
 	level: "warning" | "info";
 }
+
+export type MessageData =
+	| (Status & { type: "status"; endpoint: string; fn_index: number })
+	| (LogMessage & { type: "log"; endpoint: string; fn_index: number })
+	| (Payload & { type: "data"; endpoint: string; fn_index: number });
 
 export interface Status {
 	queue: boolean;
