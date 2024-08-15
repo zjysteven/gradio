@@ -1,5 +1,18 @@
 # @gradio/dropdown
 
+## 0.7.12
+
+### Features
+
+- [#9118](https://github.com/gradio-app/gradio/pull/9118) [`e1c404d`](https://github.com/gradio-app/gradio/commit/e1c404da1143fb52b659d03e028bdba1badf443d) - setup npm-previews of all packages.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/atoms@0.7.10
+- @gradio/icons@0.7.1
+- @gradio/statustracker@0.7.5
+- @gradio/utils@0.5.3
+
 ## 0.7.11
 
 ### Dependency updates
