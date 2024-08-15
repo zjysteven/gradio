@@ -1,5 +1,34 @@
 # gradio
 
+## 5.0.0-beta.0
+
+### Features
+
+- [#9069](https://github.com/gradio-app/gradio/pull/9069) [`f9f84bf`](https://github.com/gradio-app/gradio/commit/f9f84bfe7064634164501d1023591b415ad2a03b) - No token passed by default in `gr.load()`.  Thanks @abidlabs!
+- [#8978](https://github.com/gradio-app/gradio/pull/8978) [`fe9d1cb`](https://github.com/gradio-app/gradio/commit/fe9d1cb0870a5b07d51e8cb05401af47efbacd13) - Improve url downloads for file objects.  Thanks @aliabid94!
+- [#8810](https://github.com/gradio-app/gradio/pull/8810) [`4cf8af9`](https://github.com/gradio-app/gradio/commit/4cf8af9407a44ee914e0be567da38b29f00eff8e) - Prevent invalid values from being submitted to dropdown, etc.  Thanks @abidlabs!
+- [#8935](https://github.com/gradio-app/gradio/pull/8935) [`f6b2b97`](https://github.com/gradio-app/gradio/commit/f6b2b97d473dd81571410cccc6e1ddfcf9fa00bc) - Initialize the client with the fake host for Lite server.  Thanks @whitphx!
+- [#8959](https://github.com/gradio-app/gradio/pull/8959) [`a0aac66`](https://github.com/gradio-app/gradio/commit/a0aac6694076529ff925ccd34b3503d35e86cb49) - Adds `strict_cors` parameter to `launch()`.  Thanks @abidlabs!
+- [#9023](https://github.com/gradio-app/gradio/pull/9023) [`87e3537`](https://github.com/gradio-app/gradio/commit/87e3537342017c7f19d012f0806a14bc264e09f9) - Add height param to gr.JSON.  Thanks @hannahblair!
+- [#9073](https://github.com/gradio-app/gradio/pull/9073) [`0d8a358`](https://github.com/gradio-app/gradio/commit/0d8a358cc86331aa0c83380326b30d04597f9ef9) - Set default `format` in `gr.Audio` to be `None` to avoid unnecessary preprocessing.  Thanks @abidlabs!
+- [#9013](https://github.com/gradio-app/gradio/pull/9013) [`5350f1f`](https://github.com/gradio-app/gradio/commit/5350f1feb20cb7458d188403f319c5087052f695) - Add copy all messages button to chatbot.  Thanks @hannahblair!
+- [#8797](https://github.com/gradio-app/gradio/pull/8797) [`6e6818c`](https://github.com/gradio-app/gradio/commit/6e6818c3af836051fffdd070a9e33889b246186e) - Deprecate for 5.0.  Thanks @abidlabs!
+- [#8941](https://github.com/gradio-app/gradio/pull/8941) [`97a7bf6`](https://github.com/gradio-app/gradio/commit/97a7bf66a79179d1b91a3199d68e5c11216ca500) - Streaming inputs for 5.0.  Thanks @freddyaboulton!
+- [#9118](https://github.com/gradio-app/gradio/pull/9118) [`e1c404d`](https://github.com/gradio-app/gradio/commit/e1c404da1143fb52b659d03e028bdba1badf443d) - setup npm-previews of all packages.  Thanks @pngwn!
+- [#8884](https://github.com/gradio-app/gradio/pull/8884) [`3408dba`](https://github.com/gradio-app/gradio/commit/3408dba7560a17371be679d0f01564a5606dc90b) - replace ip addresses with machine-specific hashes.  Thanks @abidlabs!
+- [#9102](https://github.com/gradio-app/gradio/pull/9102) [`efdc323`](https://github.com/gradio-app/gradio/commit/efdc3231a7bde38cfe45d10086d0d36a24c1b9b4) - Initial SSR refactor.  Thanks @pngwn!
+
+### Fixes
+
+- [#9078](https://github.com/gradio-app/gradio/pull/9078) [`1a9d729`](https://github.com/gradio-app/gradio/commit/1a9d7297c17a3bc0493be34e8e762350ab7f0844) - Catch OSErrors in `HuggingFaceDatasetSaver._deserialize_components`.  Thanks @davidberenstein1957!
+- [#9088](https://github.com/gradio-app/gradio/pull/9088) [`96f8ffa`](https://github.com/gradio-app/gradio/commit/96f8ffa5eea511290f203c5d13484731e7d82387) - Set non-zero exit codes for custom component build and install commands when failures occur.  Thanks @freddyaboulton!
+- [#9093](https://github.com/gradio-app/gradio/pull/9093) [`60650d8`](https://github.com/gradio-app/gradio/commit/60650d84b2cfe93fd2ebf2d2997d6c0f382d5f1a) - Reset `Dataset` page to 0 when samples change.  Thanks @abidlabs!
+- [#9079](https://github.com/gradio-app/gradio/pull/9079) [`d6dc384`](https://github.com/gradio-app/gradio/commit/d6dc3846fd94fe03658f0fa8219d68ddf1f7aa64) - Add more typing to event listeners.  Thanks @JackismyShephard!
+- [#9119](https://github.com/gradio-app/gradio/pull/9119) [`30b5d6f`](https://github.com/gradio-app/gradio/commit/30b5d6f2b75e1ff0ea03c7a6567e43a022871c9f) - Fix chatinterface multimodal bug.  Thanks @freddyaboulton!
+- [#8987](https://github.com/gradio-app/gradio/pull/8987) [`7b288cf`](https://github.com/gradio-app/gradio/commit/7b288cf6772ec3dc1fa603db859975e5dab90127) - Fix unexpected rendering of Dataset.  Thanks @Col0ring!
+- [#9089](https://github.com/gradio-app/gradio/pull/9089) [`508ac84`](https://github.com/gradio-app/gradio/commit/508ac84bc2ffbeff6daae8ae0956e14e7472c4c0) - Set orig_name in downloadbutton postprocess.  Thanks @freddyaboulton!
+- [#8951](https://github.com/gradio-app/gradio/pull/8951) [`6e7d9e5`](https://github.com/gradio-app/gradio/commit/6e7d9e5b848e5af8cae97a4a4f021859c423ffa4) - Deal with OAuth too many redirects.  Thanks @Wauplin!
+
 ## 4.41.0
 
 ### Features

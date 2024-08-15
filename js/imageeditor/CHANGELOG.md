@@ -1,5 +1,22 @@
 # @gradio/imageeditor
 
+## 0.9.1-beta.0
+
+### Features
+
+- [#9118](https://github.com/gradio-app/gradio/pull/9118) [`e1c404d`](https://github.com/gradio-app/gradio/commit/e1c404da1143fb52b659d03e028bdba1badf443d) - setup npm-previews of all packages.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/statustracker@0.8.0-beta.0
+- @gradio/atoms@0.7.10-beta.0
+- @gradio/icons@0.7.1-beta.0
+- @gradio/utils@0.5.3-beta.0
+- @gradio/wasm@0.13.0-beta.0
+- @gradio/client@1.6.0-beta.0
+- @gradio/upload@0.12.3-beta.0
+- @gradio/image@0.15.0-beta.0
+
 ## 0.9.0
 
 ### Features
